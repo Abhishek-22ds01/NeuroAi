@@ -4,8 +4,7 @@ import shutil
 import os
 import time
 from app.llm import analyze_medical_report
-from app.pdf_utils import extract_text_from_pdf, pdf_to_images
-from app.ocr import extract_text_from_image
+from app.pdf_utils import extract_text_from_pdf
 
 app = FastAPI(
     title="NeuroAI",
@@ -16,9 +15,7 @@ app = FastAPI(
 # CORS Configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-    "http://localhost:5173",
-],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -61,26 +58,6 @@ async def upload_report(file: UploadFile = File(...)):
         extracted_text = extract_text_from_pdf(file_path)
 
         print(f"PDF Extraction Time: {time.time() - start:.2f} seconds")
-
-        # If very little text is found, run OCR
-        if len(extracted_text.strip()) < 100:
-
-            print("Scanned PDF detected. Running OCR...")
-
-            ocr_start = time.time()
-
-            images = pdf_to_images(file_path)
-
-            extracted_text = ""
-
-            for image in images:
-                extracted_text += extract_text_from_image(image)
-                extracted_text += "\n"
-
-            print(f"OCR Time: {time.time() - ocr_start:.2f} seconds")
-
-        else:
-            print("Digital PDF detected.")
 
         # Check if any text was extracted
         if len(extracted_text.strip()) == 0:

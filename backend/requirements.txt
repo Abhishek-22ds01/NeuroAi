@@ -5,5 +5,3 @@ python-dotenv
 google-genai
 PyMuPDF
 Pillow
-easyocr
-numpy
