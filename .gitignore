@@ -1,18 +1,21 @@
 # Python
-backend/venv/
-**/__pycache__/
+__pycache__/
 *.pyc
 
-# Environment variables
-backend/.env
+# Virtual Environment
+venv/
 
-# Uploads & generated files
-backend/uploads/
-backend/outputs/
+# Environment Variables
+.env
 
-# VS Code
+# IDE
 .vscode/
 
-# OS files
+# OS Files
 .DS_Store
 Thumbs.db
+
+
+#uploads
+backend/uploads/*
+!backend/uploads/.gitkeep

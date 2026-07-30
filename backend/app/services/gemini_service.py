@@ -1,7 +1,7 @@
 from google import genai
 from dotenv import load_dotenv
 import os
-from app.prompts import EXTRACTION_PROMPT
+from app.utils.prompts import EXTRACTION_PROMPT
 import json
 
 load_dotenv()

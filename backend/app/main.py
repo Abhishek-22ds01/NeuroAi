@@ -3,8 +3,11 @@ from fastapi.middleware.cors import CORSMiddleware
 import shutil
 import os
 import time
-from app.llm import analyze_medical_report
-from app.pdf_utils import extract_text_from_pdf
+from app.services.gemini_service import analyze_medical_report
+from app.services.pdf_service import extract_text_from_pdf
+from app.database import engine
+from app.models.user import Base
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="NeuroAI",
