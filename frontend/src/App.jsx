@@ -27,7 +27,7 @@ function App() {
     try {
       setLoading(true);
 
-      const response = await fetch("https://neuroai-production-d588.up.railway.app/", {
+      const response = await fetch("https://neuroai-production-d588.up.railway.app/upload-report", {
         method: "POST",
         body: formData,
       });
