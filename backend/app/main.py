@@ -6,7 +6,9 @@ import time
 from app.services.gemini_service import analyze_medical_report
 from app.services.pdf_service import extract_text_from_pdf
 from app.database import engine
-from app.models.user import Base
+from app.models.user import User
+from app.routers import auth
+from app.database import Base
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
@@ -23,6 +25,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.include_router(auth.router)
 
 # Upload Folder
 UPLOAD_FOLDER = "uploads"
@@ -90,3 +93,4 @@ def test_llm():
     return {
         "response": "Gemini connection successful."
     }
+
