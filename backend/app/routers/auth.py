@@ -88,11 +88,12 @@ def login(
         )
 
     access_token = create_access_token(
-        data={
-            "sub": db_user.email,
-        }
-    )
-
+    data={
+        "sub": db_user.email,
+        "id": db_user.id,
+        "full_name": db_user.full_name,
+    }
+)
     return {
         "access_token": access_token,
         "token_type": "bearer",
