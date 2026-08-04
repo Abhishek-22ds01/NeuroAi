@@ -1,57 +1,71 @@
 function TestTable({ tests }) {
-  return (
-    <div className="card">
 
-      <h2>Test Results</h2>
+    if (!tests || tests.length === 0) {
+        return null;
+    }
 
-      <table>
+    return (
 
-        <thead>
+        <div className="card">
 
-          <tr>
-            <th>Test</th>
-            <th>Value</th>
-            <th>Unit</th>
-            <th>Reference</th>
-            <th>Status</th>
-          </tr>
+            <h2>📊 Test Results</h2>
 
-        </thead>
+            <div className="table-container">
 
-        <tbody>
+                <table className="modern-table">
 
-          {tests?.map((test, index) => (
-            <tr key={index}>
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Value</th>
+                            <th>Unit</th>
+                            <th>Normal Range</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
 
-              <td>{test.name}</td>
+                    <tbody>
 
-              <td>{test.value}</td>
+                        {tests.map((test, index) => (
 
-              <td>{test.unit}</td>
+                            <tr key={index}>
 
-              <td>{test.reference_range}</td>
+                                <td>{test.name}</td>
 
-              <td
-                className={
-                  test.status === "High"
-                    ? "high"
-                    : test.status === "Low"
-                    ? "low"
-                    : "normal"
-                }
-              >
-                {test.status}
-              </td>
+                                <td>{test.value}</td>
 
-            </tr>
-          ))}
+                                <td>{test.unit}</td>
 
-        </tbody>
+                                <td>{test.reference_range}</td>
 
-      </table>
+                                <td>
 
-    </div>
-  );
+                                    <span
+                                        className={
+                                            test.status === "Normal"
+                                                ? "badge-normal"
+                                                : "badge-abnormal"
+                                        }
+                                    >
+                                        {test.status}
+                                    </span>
+
+                                </td>
+
+                            </tr>
+
+                        ))}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    );
+
 }
 
 export default TestTable;

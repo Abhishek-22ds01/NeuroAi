@@ -1,86 +1,42 @@
-import { useState } from "react";
-import "./App.css";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
-import Header from "./components/Header";
-import UploadSection from "./components/UploadSection";
-import Loader from "./components/Loader";
-import PatientCard from "./components/PatientCard";
-import SummaryCard from "./components/SummaryCard";
-import AbnormalCard from "./components/AbnormalCard";
-import RecommendationCard from "./components/RecommendationCard";
-import TestTable from "./components/TestTable";
+import Signup from "./pages/Signup";
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import ProtectedRoute from "./utils/ProtectedRoute";
 
 function App() {
-  const [file, setFile] = useState(null);
-  const [result, setResult] = useState(null);
-  const [loading, setLoading] = useState(false);
+    return (
+        <BrowserRouter>
+            <Routes>
 
-  async function uploadFile() {
-    if (!file) {
-      alert("Please select a PDF first.");
-      return;
-    }
+                <Route
+                    path="/"
+                    element={<Navigate to="/login" />}
+                />
 
-    const formData = new FormData();
-    formData.append("file", file);
+                <Route
+                    path="/signup"
+                    element={<Signup />}
+                />
 
-    try {
-      setLoading(true);
+                <Route
+                    path="/login"
+                    element={<Login />}
+                />
 
-      const response = await fetch("https://neuroai-production-d588.up.railway.app/upload-report", {
-        method: "POST",
-        body: formData,
-      });
+                <Route
+                    path="/dashboard"
+                    element={
+                        <ProtectedRoute>
+                            <Dashboard />
+                        </ProtectedRoute>
+                    }
+                />
 
-      if (!response.ok) {
-        throw new Error("Upload Failed");
-      }
-
-      const data = await response.json();
-
-      setResult(data);
-    } catch (error) {
-      console.error(error);
-      alert("Something went wrong!");
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  return (
-    <div className="container">
-
-      <Header />
-
-      <UploadSection
-        setFile={setFile}
-        uploadFile={uploadFile}
-      />
-
-      {loading && <Loader />}
-
-      {result && (
-        <>
-          <PatientCard result={result} />
-
-          <SummaryCard summary={result.summary} />
-
-          <AbnormalCard
-            abnormalParameters={result.abnormal_parameters}
-          />
-
-          <RecommendationCard
-            recommendations={result.recommendations}
-          />
-
-          <TestTable
-            tests={result.tests}
-          />
-        </>
-      )}
-
-    </div>
-  );
+            </Routes>
+        </BrowserRouter>
+    );
 }
 
 export default App;
