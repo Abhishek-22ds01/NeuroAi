@@ -9,6 +9,9 @@ from app.database import engine
 from app.models.user import User
 from app.routers import auth
 from app.database import Base
+from fastapi import Depends
+from app.security import get_current_user
+from app.models.user import User
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
@@ -41,7 +44,10 @@ def home():
 
 
 @app.post("/upload-report")
-async def upload_report(file: UploadFile = File(...)):
+async def upload_report(
+    file: UploadFile = File(...),
+    current_user: User = Depends(get_current_user),
+):
     try:
 
         # Check file type
