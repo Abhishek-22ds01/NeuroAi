@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
-
+import os
 from app.config import (
     MYSQL_HOST,
     MYSQL_PORT,
@@ -9,10 +9,13 @@ from app.config import (
     MYSQL_DATABASE,
 )
 
-DATABASE_URL = (
-    f"mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}"
-    f"@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_DATABASE}"
-)
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+if not DATABASE_URL:
+    DATABASE_URL = (
+        f"mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}"
+        f"@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_DATABASE}"
+    )
 
 engine = create_engine(
     DATABASE_URL,
