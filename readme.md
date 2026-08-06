@@ -35,7 +35,7 @@ The application allows users to securely upload PDF medical reports, automatical
 ---
 
 
-### AI Analysis
+### 📸 AI Analysis
 ![Analysis](assets/screenshots/analysis.png)
 
 ---
