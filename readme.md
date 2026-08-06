@@ -8,19 +8,32 @@ The application allows users to securely upload PDF medical reports, automatical
 
 ## 🚀 Live Demo
 
-🌐 Frontend: https://your-vercel-url.vercel.app
+🌐 Frontend: https://neuro-ai-flame.vercel.app/login
 
-⚙️ Backend API: https://your-railway-url.up.railway.app
+⚙️ Backend API: https://railway.com/project/8a3abae6-7992-47f0-abf2-ccc9a9dce28c?environmentId=f00e891d-856f-447f-b7b6-ae7af4d88495
 
 ---
 
 ## 📸 Screenshots
 
-### Login
-(Add Screenshot)
+## 📸 Login Page
 
-### Dashboard
-(Add Screenshot)
+![Login](assets/screenshots/login.png)
+
+---
+
+## 📸 Signup Page
+
+![Signup](assets/screenshots/signup.png)
+
+---
+
+## 📸 Dashboard
+
+![Dashboard](assets/screenshots/dashboard.png)
+
+---
+
 
 ### AI Analysis
 (Add Screenshot)
@@ -117,7 +130,7 @@ NeuroAI
 ## Clone Repository
 
 ```bash
-git clone https://github.com/yourusername/NeuroAI.git
+git clone https://github.com/Abhishek-22ds01/NeuroAI.git
 ```
 
 ```
