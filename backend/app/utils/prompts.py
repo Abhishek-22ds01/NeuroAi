@@ -10,70 +10,47 @@ The report may be ANY type of medical report such as:
 - Heart Health
 - Liver Function Test
 - Kidney Function Test
-- Thyroid Function Test
-- Vitamin Test
+- Thyroid
+- Vitamin
 - Urine Test
 - ECG
-- Pathology Report
-- Any laboratory medical report
+- Any pathology report
 
 Return ONLY valid JSON.
 
-{
+{{
     "patient_name": "",
     "age": "",
     "gender": "",
+
     "report_type": "",
 
     "tests": [
-        {
+        {{
             "name": "",
             "value": "",
             "unit": "",
             "reference_range": "",
             "status": ""
-        }
+        }}
     ],
 
     "summary": "",
 
-    "abnormal_parameters": [
-        {
-            "parameter": "",
-            "value": "",
-            "normal_range": "",
-            "status": ""
-        }
-    ],
+    "abnormal_parameters": [],
 
-    "recommendations": [
-        ""
-    ]
-}
+    "recommendations": []
+}}
 
 Rules:
 
-1. Extract the patient's name, age, gender and report type whenever available.
+1. Extract EVERY test found in the report.
 
-2. Extract EVERY laboratory test exactly as written in the report.
+2. Do NOT invent tests.
 
-3. Do NOT invent or guess tests that are not present.
+3. If age or gender is missing, return "".
 
-4. If patient name, age or gender is missing, return an empty string "".
-
-5. Every test inside "tests" MUST follow this format:
-
-{
-    "name": "",
-    "value": "",
-    "unit": "",
-    "reference_range": "",
-    "status": ""
-}
-
-6. Determine the status using the reference range.
-
-Allowed values are ONLY:
+4. Status must be one of:
 
 - Low
 - Normal
@@ -82,43 +59,7 @@ Allowed values are ONLY:
 - Critical
 - Unknown
 
-7. The "summary" should contain a short medical summary in simple English (3-6 sentences).
-
-8. "abnormal_parameters" must contain ONLY those tests whose status is NOT "Normal".
-
-9. Every abnormal parameter MUST follow EXACTLY this structure:
-
-{
-    "parameter": "",
-    "value": "",
-    "normal_range": "",
-    "status": ""
-}
-
-Where:
-
-- parameter = test name
-- value = observed value (include unit if available)
-- normal_range = reference range
-- status = Low / High / Borderline / Critical / Unknown
-
-10. If there are NO abnormal parameters, return:
-
-"abnormal_parameters": []
-
-11. Give 3-5 useful health recommendations based ONLY on the abnormalities found.
-
-12. If every test is normal, recommend maintaining a healthy lifestyle instead of inventing diseases.
-
-13. Return ONLY valid JSON.
-
-Do NOT include:
-
-- Markdown
-- Triple backticks
-- Explanations
-- Notes
-- Extra text
+5. Return ONLY JSON.
 
 Medical Report:
 
