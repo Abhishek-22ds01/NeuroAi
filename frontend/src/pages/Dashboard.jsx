@@ -78,7 +78,12 @@ function Dashboard() {
 
             <SummaryCard summary={result.summary} />
 
-            <AbnormalCard abnormalParameters={result.abnormal_parameters} />
+            <AbnormalCard
+              abnormalParameters={result.tests?.filter(
+                (test) =>
+                  test.status?.toLowerCase() !== "normal"
+              )}
+            />
 
             <RecommendationCard recommendations={result.recommendations} />
 

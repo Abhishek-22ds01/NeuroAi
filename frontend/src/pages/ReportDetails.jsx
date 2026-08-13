@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+
 import {
     FaArrowLeft,
     FaUser,
@@ -13,6 +14,7 @@ import {
 
 import "./ReportDetails.css";
 
+
 function ReportDetails() {
 
     const { report_id } = useParams();
@@ -20,7 +22,9 @@ function ReportDetails() {
     const navigate = useNavigate();
 
     const [report, setReport] = useState(null);
+
     const [loading, setLoading] = useState(true);
+
     const [error, setError] = useState("");
 
 
@@ -38,8 +42,9 @@ function ReportDetails() {
             const token =
                 localStorage.getItem("access_token");
 
+
             const response = await fetch(
-                `http://127.0.0.1:8000/reports/${report_id}`,
+                `${import.meta.env.VITE_API_URL}/reports/${report_id}`,
                 {
                     method: "GET",
 
@@ -63,6 +68,7 @@ function ReportDetails() {
 
             setReport(data);
 
+
         } catch (error) {
 
             console.error(error);
@@ -70,6 +76,7 @@ function ReportDetails() {
             setError(
                 "Unable to load this report."
             );
+
 
         } finally {
 
@@ -80,34 +87,52 @@ function ReportDetails() {
     }
 
 
+    /* Loading */
+
     if (loading) {
 
         return (
+
             <div className="report-details-message">
+
                 Loading report...
+
             </div>
+
         );
 
     }
 
+
+    /* Error */
 
     if (error) {
 
         return (
+
             <div className="report-details-message error">
+
                 {error}
+
             </div>
+
         );
 
     }
 
 
+    /* Report not found */
+
     if (!report) {
 
         return (
+
             <div className="report-details-message">
+
                 Report not found.
+
             </div>
+
         );
 
     }
@@ -115,11 +140,12 @@ function ReportDetails() {
 
     /*
      * analysis_result is stored as JSON text
-     * in the database, so convert it back to
-     * an object.
+     * in the database, so convert it back
+     * into an object.
      */
 
     let analysis = {};
+
 
     try {
 
@@ -127,6 +153,7 @@ function ReportDetails() {
             typeof report.analysis_result === "string"
                 ? JSON.parse(report.analysis_result)
                 : report.analysis_result || {};
+
 
     } catch (error) {
 
@@ -140,10 +167,35 @@ function ReportDetails() {
     }
 
 
+    /*
+     * Test results are stored inside analysis.tests
+     */
+
     const tests = analysis.tests || [];
 
-    const abnormalParameters =
-        analysis.abnormal_parameters || [];
+
+    /*
+     * Get abnormal parameters directly
+     * from the saved test results.
+     *
+     * Anything whose status is not "normal"
+     * is considered abnormal.
+     */
+
+    const abnormalParameters = tests.filter(
+
+        (test) =>
+
+            test.status &&
+
+            test.status.toLowerCase() !== "normal"
+
+    );
+
+
+    /*
+     * AI recommendations
+     */
 
     const recommendations =
         analysis.recommendations || [];
@@ -153,6 +205,7 @@ function ReportDetails() {
 
         <div className="report-details-page">
 
+
             {/* Header */}
 
             <div className="report-details-header">
@@ -161,21 +214,31 @@ function ReportDetails() {
                     className="back-btn"
                     onClick={() => navigate("/reports")}
                 >
+
                     <FaArrowLeft />
+
                     Back to My Reports
+
                 </button>
 
 
                 <h1>
+
                     <FaFileMedical />
+
                     Medical Report
+
                 </h1>
 
+
                 <p>
+
                     Detailed AI analysis of the medical report
+
                 </p>
 
             </div>
+
 
 
             {/* Patient Information */}
@@ -183,69 +246,103 @@ function ReportDetails() {
             <div className="details-card">
 
                 <h2>
+
                     <FaUser />
+
                     Patient Information
+
                 </h2>
 
 
                 <div className="patient-grid">
 
+
                     <div className="patient-item">
 
-                        <span>Name</span>
+                        <span>
+
+                            Name
+
+                        </span>
+
 
                         <strong>
+
                             {report.patient_name || "N/A"}
+
                         </strong>
 
                     </div>
 
 
+
                     <div className="patient-item">
 
                         <span>
+
                             <FaBirthdayCake />
+
                             Age
+
                         </span>
 
+
                         <strong>
+
                             {report.age || "N/A"}
+
                         </strong>
 
                     </div>
 
 
+
                     <div className="patient-item">
 
                         <span>
+
                             <FaVenusMars />
+
                             Gender
+
                         </span>
 
+
                         <strong>
+
                             {report.gender || "N/A"}
+
                         </strong>
 
                     </div>
 
 
+
                     <div className="patient-item">
 
                         <span>
+
                             <FaFileMedical />
+
                             Report Type
+
                         </span>
 
+
                         <strong>
+
                             {report.report_type ||
                                 "Medical Report"}
+
                         </strong>
 
                     </div>
+
 
                 </div>
 
             </div>
+
 
 
             {/* AI Summary */}
@@ -253,15 +350,20 @@ function ReportDetails() {
             <div className="details-card">
 
                 <h2>
+
                     <FaBrain />
+
                     AI Summary
+
                 </h2>
 
 
                 <div className="summary-box">
 
                     {analysis.summary ||
+
                         report.summary ||
+
                         "No summary available."}
 
                 </div>
@@ -269,20 +371,26 @@ function ReportDetails() {
             </div>
 
 
+
             {/* Test Results */}
 
             <div className="details-card">
 
                 <h2>
+
                     <FaFileMedical />
+
                     Test Results
+
                 </h2>
 
 
                 {tests.length === 0 ? (
 
                     <div className="empty-box">
+
                         No test results available.
+
                     </div>
 
                 ) : (
@@ -295,15 +403,25 @@ function ReportDetails() {
 
                                 <tr>
 
-                                    <th>Test</th>
+                                    <th>
+                                        Test
+                                    </th>
 
-                                    <th>Value</th>
+                                    <th>
+                                        Value
+                                    </th>
 
-                                    <th>Unit</th>
+                                    <th>
+                                        Unit
+                                    </th>
 
-                                    <th>Reference Range</th>
+                                    <th>
+                                        Reference Range
+                                    </th>
 
-                                    <th>Status</th>
+                                    <th>
+                                        Status
+                                    </th>
 
                                 </tr>
 
@@ -318,21 +436,33 @@ function ReportDetails() {
                                         <tr key={index}>
 
                                             <td>
+
                                                 {test.name}
+
                                             </td>
 
+
                                             <td>
+
                                                 {test.value}
+
                                             </td>
 
+
                                             <td>
+
                                                 {test.unit || "-"}
+
                                             </td>
 
+
                                             <td>
+
                                                 {test.reference_range ||
                                                     "-"}
+
                                             </td>
+
 
                                             <td>
 
@@ -342,8 +472,10 @@ function ReportDetails() {
                                                         "Unknown"
                                                     ).toLowerCase()}`}
                                                 >
+
                                                     {test.status ||
                                                         "Unknown"}
+
                                                 </span>
 
                                             </td>
@@ -364,13 +496,17 @@ function ReportDetails() {
             </div>
 
 
+
             {/* Abnormal Parameters */}
 
             <div className="details-card">
 
                 <h2>
+
                     <FaExclamationTriangle />
+
                     Abnormal Parameters
+
                 </h2>
 
 
@@ -394,27 +530,39 @@ function ReportDetails() {
                                     key={index}
                                 >
 
+
                                     <h3>
-                                        {item.parameter ||
-                                            item.name ||
+
+                                        {item.name ||
                                             "Unknown"}
+
                                     </h3>
 
 
                                     <p>
+
                                         <strong>
                                             Value:
                                         </strong>{" "}
+
                                         {item.value || "-"}
+
+                                        {item.unit
+                                            ? ` ${item.unit}`
+                                            : ""}
+
                                     </p>
 
 
                                     <p>
+
                                         <strong>
                                             Normal Range:
                                         </strong>{" "}
-                                        {item.normal_range ||
+
+                                        {item.reference_range ||
                                             "-"}
+
                                     </p>
 
 
@@ -424,6 +572,7 @@ function ReportDetails() {
                                             "Abnormal"}
 
                                     </span>
+
 
                                 </div>
 
@@ -437,13 +586,17 @@ function ReportDetails() {
             </div>
 
 
-            {/* Recommendations */}
+
+            {/* AI Recommendations */}
 
             <div className="details-card">
 
                 <h2>
+
                     <FaLightbulb />
+
                     AI Recommendations
+
                 </h2>
 
 
@@ -470,7 +623,9 @@ function ReportDetails() {
                                     💡
 
                                     <span>
+
                                         {recommendation}
+
                                     </span>
 
                                 </div>
@@ -484,10 +639,12 @@ function ReportDetails() {
 
             </div>
 
+
         </div>
 
     );
 
 }
+
 
 export default ReportDetails;

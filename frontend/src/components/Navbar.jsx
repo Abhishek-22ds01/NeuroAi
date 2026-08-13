@@ -2,17 +2,20 @@ import {
     FaBrain,
     FaSignOutAlt,
     FaUserCircle,
-    FaFileMedical
+    FaFileMedical,
 } from "react-icons/fa";
 
 import { useNavigate } from "react-router-dom";
+
 import { getCurrentUser } from "../utils/auth";
+
 
 function Navbar() {
 
     const navigate = useNavigate();
 
     const user = getCurrentUser();
+
 
     function logout() {
 
@@ -22,15 +25,14 @@ function Navbar() {
 
     }
 
+
     return (
 
         <nav className="navbar">
 
-            <div
-                className="logo"
-                onClick={() => navigate("/dashboard")}
-                style={{ cursor: "pointer" }}
-            >
+            {/* Logo */}
+
+            <div className="logo">
 
                 <FaBrain />
 
@@ -39,18 +41,21 @@ function Navbar() {
             </div>
 
 
+            {/* Right Side */}
+
             <div className="navbar-right">
+
 
                 {/* My Reports */}
 
                 <button
-                    className="reports-btn"
+                    className="my-reports-btn"
                     onClick={() => navigate("/reports")}
                 >
 
                     <FaFileMedical />
 
-                    My Reports
+                    <span>My Reports</span>
 
                 </button>
 
@@ -62,9 +67,7 @@ function Navbar() {
                     <FaUserCircle />
 
                     <span>
-
                         {user?.full_name || "User"}
-
                     </span>
 
                 </div>
@@ -79,7 +82,7 @@ function Navbar() {
 
                     <FaSignOutAlt />
 
-                    Logout
+                    <span>Logout</span>
 
                 </button>
 
@@ -90,5 +93,6 @@ function Navbar() {
     );
 
 }
+
 
 export default Navbar;
