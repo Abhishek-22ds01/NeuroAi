@@ -10,7 +10,10 @@ import {
     FaBrain,
     FaExclamationTriangle,
     FaLightbulb,
+    FaDownload,
 } from "react-icons/fa";
+
+import jsPDF from "jspdf";
 
 import "./ReportDetails.css";
 
@@ -87,7 +90,659 @@ function ReportDetails() {
     }
 
 
-    /* Loading */
+    /*
+     * DOWNLOAD REPORT AS PDF
+     */
+
+    function downloadPDF() {
+
+        const doc = new jsPDF();
+
+        const pageWidth =
+            doc.internal.pageSize.getWidth();
+
+        let y = 20;
+
+
+        /*
+         * Helper: Add wrapped text
+         */
+
+        function addText(
+            text,
+            x,
+            yPosition,
+            size = 11
+        ) {
+
+            doc.setFontSize(size);
+
+            const lines =
+                doc.splitTextToSize(
+                    String(text),
+                    pageWidth - 30
+                );
+
+            doc.text(
+                lines,
+                x,
+                yPosition
+            );
+
+            return (
+                yPosition +
+                lines.length * 6
+            );
+
+        }
+
+
+        /*
+         * Helper: Check page space
+         */
+
+        function checkPageSpace(
+            requiredSpace = 20
+        ) {
+
+            if (
+                y + requiredSpace >
+                280
+            ) {
+
+                doc.addPage();
+
+                y = 20;
+
+            }
+
+        }
+
+
+        /*
+         * -----------------------------------------
+         * HEADER
+         * -----------------------------------------
+         */
+
+        doc.setFont(
+            "helvetica",
+            "bold"
+        );
+
+        doc.setFontSize(22);
+
+        doc.text(
+            "NeuroAI",
+            15,
+            y
+        );
+
+        y += 10;
+
+
+        doc.setFontSize(16);
+
+        doc.text(
+            "Medical Report",
+            15,
+            y
+        );
+
+        y += 10;
+
+
+        doc.setDrawColor(
+            37,
+            99,
+            235
+        );
+
+        doc.line(
+            15,
+            y,
+            pageWidth - 15,
+            y
+        );
+
+        y += 12;
+
+
+        /*
+         * -----------------------------------------
+         * PATIENT INFORMATION
+         * -----------------------------------------
+         */
+
+        checkPageSpace(50);
+
+
+        doc.setFont(
+            "helvetica",
+            "bold"
+        );
+
+        doc.setFontSize(14);
+
+        doc.text(
+            "Patient Information",
+            15,
+            y
+        );
+
+        y += 9;
+
+
+        doc.setFont(
+            "helvetica",
+            "normal"
+        );
+
+
+        y = addText(
+            `Name: ${
+                report.patient_name ||
+                "N/A"
+            }`,
+            15,
+            y
+        );
+
+
+        y = addText(
+            `Age: ${
+                report.age ||
+                "N/A"
+            }`,
+            15,
+            y
+        );
+
+
+        y = addText(
+            `Gender: ${
+                report.gender ||
+                "N/A"
+            }`,
+            15,
+            y
+        );
+
+
+        y = addText(
+            `Report Type: ${
+                report.report_type ||
+                "Medical Report"
+            }`,
+            15,
+            y
+        );
+
+
+        if (report.created_at) {
+
+            y = addText(
+                `Report Date: ${
+                    new Date(
+                        report.created_at
+                    ).toLocaleDateString(
+                        "en-IN"
+                    )
+                }`,
+                15,
+                y
+            );
+
+        }
+
+
+        y += 7;
+
+
+        /*
+         * -----------------------------------------
+         * AI SUMMARY
+         * -----------------------------------------
+         */
+
+        checkPageSpace(50);
+
+
+        doc.setFont(
+            "helvetica",
+            "bold"
+        );
+
+        doc.setFontSize(14);
+
+        doc.text(
+            "AI Summary",
+            15,
+            y
+        );
+
+        y += 8;
+
+
+        doc.setFont(
+            "helvetica",
+            "normal"
+        );
+
+
+        y = addText(
+            analysis.summary ||
+                report.summary ||
+                "No summary available.",
+            15,
+            y
+        );
+
+
+        y += 8;
+
+
+        /*
+         * -----------------------------------------
+         * TEST RESULTS
+         * -----------------------------------------
+         */
+
+        checkPageSpace(60);
+
+
+        doc.setFont(
+            "helvetica",
+            "bold"
+        );
+
+        doc.setFontSize(14);
+
+        doc.text(
+            "Test Results",
+            15,
+            y
+        );
+
+        y += 9;
+
+
+        doc.setFontSize(9);
+
+        doc.setFont(
+            "helvetica",
+            "bold"
+        );
+
+
+        doc.text(
+            "Test",
+            15,
+            y
+        );
+
+
+        doc.text(
+            "Value",
+            60,
+            y
+        );
+
+
+        doc.text(
+            "Unit",
+            95,
+            y
+        );
+
+
+        doc.text(
+            "Reference Range",
+            125,
+            y
+        );
+
+
+        doc.text(
+            "Status",
+            175,
+            y
+        );
+
+
+        y += 6;
+
+
+        doc.setFont(
+            "helvetica",
+            "normal"
+        );
+
+
+        tests.forEach(
+            (test) => {
+
+                checkPageSpace(15);
+
+
+                doc.text(
+                    String(
+                        test.name ||
+                        "-"
+                    ),
+                    15,
+                    y
+                );
+
+
+                doc.text(
+                    String(
+                        test.value ||
+                        "-"
+                    ),
+                    60,
+                    y
+                );
+
+
+                doc.text(
+                    String(
+                        test.unit ||
+                        "-"
+                    ),
+                    95,
+                    y
+                );
+
+
+                doc.text(
+                    String(
+                        test.reference_range ||
+                        "-"
+                    ),
+                    125,
+                    y
+                );
+
+
+                doc.text(
+                    String(
+                        test.status ||
+                        "Unknown"
+                    ),
+                    175,
+                    y
+                );
+
+
+                y += 7;
+
+            }
+        );
+
+
+        y += 8;
+
+
+        /*
+         * -----------------------------------------
+         * ABNORMAL PARAMETERS
+         * -----------------------------------------
+         */
+
+        checkPageSpace(50);
+
+
+        doc.setFont(
+            "helvetica",
+            "bold"
+        );
+
+        doc.setFontSize(14);
+
+        doc.text(
+            "Abnormal Parameters",
+            15,
+            y
+        );
+
+        y += 9;
+
+
+        doc.setFont(
+            "helvetica",
+            "normal"
+        );
+
+
+        if (
+            abnormalParameters.length === 0
+        ) {
+
+            y = addText(
+                "No abnormal parameters found.",
+                15,
+                y
+            );
+
+        } else {
+
+            abnormalParameters.forEach(
+                (item) => {
+
+                    checkPageSpace(30);
+
+
+                    doc.setFont(
+                        "helvetica",
+                        "bold"
+                    );
+
+                    y = addText(
+                        `Parameter: ${
+                            item.name ||
+                            "Unknown"
+                        }`,
+                        15,
+                        y
+                    );
+
+
+                    doc.setFont(
+                        "helvetica",
+                        "normal"
+                    );
+
+
+                    y = addText(
+                        `Value: ${
+                            item.value ||
+                            "-"
+                        }${
+                            item.unit
+                                ? ` ${item.unit}`
+                                : ""
+                        }`,
+                        15,
+                        y
+                    );
+
+
+                    y = addText(
+                        `Normal Range: ${
+                            item.reference_range ||
+                            "-"
+                        }`,
+                        15,
+                        y
+                    );
+
+
+                    y = addText(
+                        `Status: ${
+                            item.status ||
+                            "Abnormal"
+                        }`,
+                        15,
+                        y
+                    );
+
+
+                    y += 5;
+
+                }
+            );
+
+        }
+
+
+        /*
+         * -----------------------------------------
+         * AI RECOMMENDATIONS
+         * -----------------------------------------
+         */
+
+        checkPageSpace(50);
+
+
+        doc.setFont(
+            "helvetica",
+            "bold"
+        );
+
+        doc.setFontSize(14);
+
+        doc.text(
+            "AI Recommendations",
+            15,
+            y
+        );
+
+        y += 9;
+
+
+        doc.setFont(
+            "helvetica",
+            "normal"
+        );
+
+
+        if (
+            recommendations.length === 0
+        ) {
+
+            y = addText(
+                "No recommendations available.",
+                15,
+                y
+            );
+
+        } else {
+
+            recommendations.forEach(
+                (
+                    recommendation,
+                    index
+                ) => {
+
+                    checkPageSpace(20);
+
+
+                    y = addText(
+                        `${index + 1}. ${
+                            recommendation
+                        }`,
+                        15,
+                        y
+                    );
+
+
+                    y += 2;
+
+                }
+            );
+
+        }
+
+
+        /*
+         * -----------------------------------------
+         * FOOTER
+         * -----------------------------------------
+         */
+
+        const pageCount =
+            doc.internal.getNumberOfPages();
+
+
+        for (
+            let page = 1;
+            page <= pageCount;
+            page++
+        ) {
+
+            doc.setPage(page);
+
+
+            doc.setFont(
+                "helvetica",
+                "normal"
+            );
+
+            doc.setFontSize(8);
+
+
+            doc.text(
+                "Generated by NeuroAI",
+                15,
+                290
+            );
+
+
+            doc.text(
+                `Page ${page} of ${pageCount}`,
+                pageWidth - 40,
+                290
+            );
+
+        }
+
+
+        /*
+         * -----------------------------------------
+         * DOWNLOAD FILE
+         * -----------------------------------------
+         */
+
+        const patientName =
+            report.patient_name ||
+            "Patient";
+
+
+        const safeName =
+            patientName
+                .replace(
+                    /[^a-z0-9]/gi,
+                    "_"
+                )
+                .replace(
+                    /_+/g,
+                    "_"
+                );
+
+
+        doc.save(
+            `NeuroAI_${safeName}_Report.pdf`
+        );
+
+    }
+
+
+    /*
+     * -----------------------------------------
+     * LOADING
+     * -----------------------------------------
+     */
 
     if (loading) {
 
@@ -104,7 +759,11 @@ function ReportDetails() {
     }
 
 
-    /* Error */
+    /*
+     * -----------------------------------------
+     * ERROR
+     * -----------------------------------------
+     */
 
     if (error) {
 
@@ -121,7 +780,11 @@ function ReportDetails() {
     }
 
 
-    /* Report not found */
+    /*
+     * -----------------------------------------
+     * REPORT NOT FOUND
+     * -----------------------------------------
+     */
 
     if (!report) {
 
@@ -139,9 +802,9 @@ function ReportDetails() {
 
 
     /*
-     * analysis_result is stored as JSON text
-     * in the database, so convert it back
-     * into an object.
+     * -----------------------------------------
+     * PARSE ANALYSIS RESULT
+     * -----------------------------------------
      */
 
     let analysis = {};
@@ -150,9 +813,15 @@ function ReportDetails() {
     try {
 
         analysis =
-            typeof report.analysis_result === "string"
-                ? JSON.parse(report.analysis_result)
-                : report.analysis_result || {};
+            typeof report.analysis_result ===
+            "string"
+
+                ? JSON.parse(
+                    report.analysis_result
+                )
+
+                : report.analysis_result ||
+                  {};
 
 
     } catch (error) {
@@ -162,39 +831,45 @@ function ReportDetails() {
             error
         );
 
+
         analysis = {};
 
     }
 
 
     /*
-     * Test results are stored inside analysis.tests
+     * -----------------------------------------
+     * TEST RESULTS
+     * -----------------------------------------
      */
 
-    const tests = analysis.tests || [];
+    const tests =
+        analysis.tests || [];
 
 
     /*
-     * Get abnormal parameters directly
-     * from the saved test results.
-     *
-     * Anything whose status is not "normal"
-     * is considered abnormal.
+     * -----------------------------------------
+     * ABNORMAL PARAMETERS
+     * -----------------------------------------
      */
 
-    const abnormalParameters = tests.filter(
+    const abnormalParameters =
+        tests.filter(
 
-        (test) =>
+            (test) =>
 
-            test.status &&
+                test.status &&
 
-            test.status.toLowerCase() !== "normal"
+                test.status.toLowerCase() !==
+                "normal"
 
-    );
+        );
 
 
     /*
-     * AI recommendations
+     * -----------------------------------------
+     * RECOMMENDATIONS
+     * -----------------------------------------
      */
 
     const recommendations =
@@ -210,9 +885,12 @@ function ReportDetails() {
 
             <div className="report-details-header">
 
+
                 <button
                     className="back-btn"
-                    onClick={() => navigate("/reports")}
+                    onClick={() =>
+                        navigate("/reports")
+                    }
                 >
 
                     <FaArrowLeft />
@@ -233,9 +911,25 @@ function ReportDetails() {
 
                 <p>
 
-                    Detailed AI analysis of the medical report
+                    Detailed AI analysis of the
+                    medical report
 
                 </p>
+
+
+                {/* Download PDF */}
+
+                <button
+                    className="download-report-btn"
+                    onClick={downloadPDF}
+                >
+
+                    <FaDownload />
+
+                    Download Report
+
+                </button>
+
 
             </div>
 
@@ -268,7 +962,8 @@ function ReportDetails() {
 
                         <strong>
 
-                            {report.patient_name || "N/A"}
+                            {report.patient_name ||
+                                "N/A"}
 
                         </strong>
 
@@ -289,7 +984,8 @@ function ReportDetails() {
 
                         <strong>
 
-                            {report.age || "N/A"}
+                            {report.age ||
+                                "N/A"}
 
                         </strong>
 
@@ -310,7 +1006,8 @@ function ReportDetails() {
 
                         <strong>
 
-                            {report.gender || "N/A"}
+                            {report.gender ||
+                                "N/A"}
 
                         </strong>
 
@@ -433,7 +1130,9 @@ function ReportDetails() {
                                 {tests.map(
                                     (test, index) => (
 
-                                        <tr key={index}>
+                                        <tr
+                                            key={index}
+                                        >
 
                                             <td>
 
@@ -451,7 +1150,8 @@ function ReportDetails() {
 
                                             <td>
 
-                                                {test.unit || "-"}
+                                                {test.unit ||
+                                                    "-"}
 
                                             </td>
 
@@ -530,7 +1230,6 @@ function ReportDetails() {
                                     key={index}
                                 >
 
-
                                     <h3>
 
                                         {item.name ||
@@ -545,7 +1244,8 @@ function ReportDetails() {
                                             Value:
                                         </strong>{" "}
 
-                                        {item.value || "-"}
+                                        {item.value ||
+                                            "-"}
 
                                         {item.unit
                                             ? ` ${item.unit}`
@@ -613,7 +1313,10 @@ function ReportDetails() {
                     <div className="recommendations">
 
                         {recommendations.map(
-                            (recommendation, index) => (
+                            (
+                                recommendation,
+                                index
+                            ) => (
 
                                 <div
                                     className="recommendation"
