@@ -56,7 +56,7 @@ app.include_router(reports.router)
 # Upload Folder
 # -----------------------------
 
-UPLOAD_FOLDER = "uploads"
+UPLOAD_FOLDER = "/tmp/neuroai_uploads"
 
 os.makedirs(
     UPLOAD_FOLDER,
@@ -133,6 +133,10 @@ async def upload_report(
             f"PDF Extraction Time: "
             f"{time.time() - start:.2f} seconds"
         )
+        try:
+            os.remove(file_path)
+        except Exception:
+            pass
 
 
         # -----------------------------

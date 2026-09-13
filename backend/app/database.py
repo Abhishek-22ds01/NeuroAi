@@ -12,9 +12,7 @@ from app.config import (
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
-# If Railway provides DATABASE_URL, use it
-DATABASE_URL = os.getenv("DATABASE_URL")
-
+# Use DATABASE_URL if provided by Vercel
 if DATABASE_URL:
     DATABASE_URL = DATABASE_URL.replace(
         "mysql://",
@@ -27,7 +25,11 @@ else:
         f"@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_DATABASE}"
     )
 
-engine = create_engine(DATABASE_URL, echo=True)
+engine = create_engine(
+    DATABASE_URL,
+    echo=False,
+    pool_pre_ping=True,
+)
 
 SessionLocal = sessionmaker(
     autocommit=False,
@@ -40,6 +42,7 @@ Base = declarative_base()
 
 def get_db():
     db = SessionLocal()
+
     try:
         yield db
     finally:
