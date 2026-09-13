@@ -12,7 +12,9 @@ from app.config import (
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
-# Use DATABASE_URL if provided by Vercel
+# TiDB Cloud TLS certificate path (local development)
+TIDB_CA_PATH = os.getenv("TIDB_CA_PATH")
+
 if DATABASE_URL:
     DATABASE_URL = DATABASE_URL.replace(
         "mysql://",
@@ -25,10 +27,21 @@ else:
         f"@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_DATABASE}"
     )
 
+# TiDB Cloud Starter requires TLS for public endpoint
+connect_args = {
+    "ssl_verify_cert": True,
+    "ssl_verify_identity": True,
+}
+
+if TIDB_CA_PATH:
+    connect_args["ssl_ca"] = TIDB_CA_PATH
+
 engine = create_engine(
     DATABASE_URL,
     echo=False,
     pool_pre_ping=True,
+    pool_recycle=300,
+    connect_args=connect_args,
 )
 
 SessionLocal = sessionmaker(
