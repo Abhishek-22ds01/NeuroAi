@@ -29,6 +29,17 @@ app = FastAPI(
     description="AI Medical Report Analyzer",
     version="1.0.0"
 )
+from starlette.middleware.base import BaseHTTPMiddleware
+
+
+class StripAPIPrefixMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request, call_next):
+        if request.scope["path"].startswith("/api"):
+            request.scope["path"] = request.scope["path"][4:] or "/"
+        return await call_next(request)
+
+
+app.add_middleware(StripAPIPrefixMiddleware)
 
 
 # -----------------------------
