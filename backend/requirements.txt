@@ -10,4 +10,4 @@ python-jose==3.5.0
 cryptography==49.0.0
 google-genai==2.13.0
 pymupdf==1.28.0
-Pillow==11.3.0
+Pillow
