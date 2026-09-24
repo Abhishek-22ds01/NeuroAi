@@ -11,3 +11,4 @@ cryptography==49.0.0
 google-genai==2.13.0
 pymupdf==1.28.0
 Pillow
+email-validator
