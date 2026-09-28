@@ -7,7 +7,7 @@ import {
 } from "react-icons/fa";
 
 import { useNavigate } from "react-router-dom";
-
+import ReportComparisonChart from "../components/ReportComparisonChart";
 import "./reports.css";
 
 
@@ -22,6 +22,16 @@ function Reports() {
     const [error, setError] = useState("");
 
     const [deletingId, setDeletingId] = useState(null);
+
+    // Selected reports for comparison
+    const [selectedReports, setSelectedReports] = useState([]);
+
+    // Comparison states
+    const [comparisonData, setComparisonData] = useState(null);
+
+    const [comparisonLoading, setComparisonLoading] = useState(false);
+
+    const [comparisonError, setComparisonError] = useState("");
 
 
     useEffect(() => {
@@ -75,6 +85,121 @@ function Reports() {
         } finally {
 
             setLoading(false);
+
+        }
+
+    }
+
+
+    // Select / unselect report
+    function toggleReportSelection(reportId) {
+
+        setSelectedReports((previousSelected) => {
+
+            if (previousSelected.includes(reportId)) {
+
+                return previousSelected.filter(
+                    (id) => id !== reportId
+                );
+
+            }
+
+            return [
+                ...previousSelected,
+                reportId,
+            ];
+
+        });
+
+    }
+
+
+    // Compare selected reports
+    async function compareReports() {
+
+        if (selectedReports.length < 2) {
+            return;
+        }
+
+
+        try {
+
+            setComparisonLoading(true);
+
+            setComparisonError("");
+
+            setComparisonData(null);
+
+
+            const token =
+                localStorage.getItem("access_token");
+
+
+            const params = new URLSearchParams();
+
+
+            selectedReports.forEach((reportId) => {
+
+                params.append(
+                    "report_ids",
+                    reportId
+                );
+
+            });
+
+
+            const response = await fetch(
+                `${import.meta.env.VITE_API_URL}/reports/compare?${params.toString()}`,
+                {
+                    method: "GET",
+
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+
+            if (!response.ok) {
+
+                const errorData =
+                    await response
+                        .json()
+                        .catch(() => null);
+
+
+                throw new Error(
+                    errorData?.detail ||
+                    "Failed to compare reports."
+                );
+
+            }
+
+
+            const data =
+                await response.json();
+
+
+            console.log(
+                "Comparison result:",
+                data
+            );
+
+
+            setComparisonData(data);
+
+        } catch (error) {
+
+            console.error(error);
+
+            setComparisonError(
+                error.message ||
+                "Unable to compare reports."
+            );
+
+        } finally {
+
+            setComparisonLoading(false);
 
         }
 
@@ -136,6 +261,18 @@ function Reports() {
             );
 
 
+            // Also remove deleted report
+            // from selected reports
+
+            setSelectedReports(
+                (previousSelected) =>
+                    previousSelected.filter(
+                        (id) =>
+                            id !== reportId
+                    )
+            );
+
+
         } catch (error) {
 
             console.error(error);
@@ -162,7 +299,9 @@ function Reports() {
 
             <button
                 className="back-dashboard-btn"
-                onClick={() => navigate("/dashboard")}
+                onClick={() =>
+                    navigate("/dashboard")
+                }
             >
 
                 <FaArrowLeft />
@@ -196,6 +335,28 @@ function Reports() {
                     </p>
 
                 </div>
+
+
+                {/* Compare Reports Button */}
+
+                {reports.length >= 2 && (
+
+                    <button
+                        className="compare-reports-btn"
+                        disabled={
+                            selectedReports.length < 2 ||
+                            comparisonLoading
+                        }
+                        onClick={compareReports}
+                    >
+
+                        {comparisonLoading
+                            ? "Comparing..."
+                            : "Compare Reports"}
+
+                    </button>
+
+                )}
 
             </div>
 
@@ -254,7 +415,9 @@ function Reports() {
                                 navigate("/dashboard")
                             }
                         >
+
                             Analyze a Report
+
                         </button>
 
                     </div>
@@ -274,9 +437,31 @@ function Reports() {
                         {reports.map((report) => (
 
                             <div
-                                className="report-card"
+                                className={`report-card ${selectedReports.includes(
+                                    report.id
+                                )
+                                        ? "selected-report"
+                                        : ""
+                                    }`}
                                 key={report.id}
                             >
+
+
+                                {/* Comparison Checkbox */}
+
+                                <input
+                                    type="checkbox"
+                                    className="report-checkbox"
+                                    checked={selectedReports.includes(
+                                        report.id
+                                    )}
+                                    onChange={() =>
+                                        toggleReportSelection(
+                                            report.id
+                                        )
+                                    }
+                                />
+
 
 
                                 {/* Icon */}
@@ -398,7 +583,7 @@ function Reports() {
                                         <FaTrash />
 
                                         {deletingId ===
-                                        report.id
+                                            report.id
                                             ? "Deleting..."
                                             : "Delete"}
 
@@ -415,6 +600,61 @@ function Reports() {
                     </div>
 
                 )}
+
+
+
+            {/* Comparison Loading */}
+
+            {comparisonLoading && (
+
+                <div className="comparison-message">
+
+                    Comparing selected medical reports...
+
+                </div>
+
+            )}
+
+
+
+            {/* Comparison Error */}
+
+            {comparisonError && (
+
+                <div className="comparison-error">
+
+                    {comparisonError}
+
+                </div>
+
+            )}
+
+
+
+            {/* Comparison Result */}
+
+            {comparisonData && (
+                <div className="comparison-result">
+                    <h2>Health Progress</h2>
+
+                    <p>
+                        Comparing your selected medical reports
+                        over time.
+                    </p>
+
+                    <div className="comparison-charts">
+                        {Object.entries(
+                            comparisonData.comparison || {}
+                        ).map(([testName, testData]) => (
+                            <ReportComparisonChart
+                                key={testName}
+                                testName={testName}
+                                data={testData}
+                            />
+                        ))}
+                    </div>
+                </div>
+            )}
 
         </div>
 
