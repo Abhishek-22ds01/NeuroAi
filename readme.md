@@ -1,353 +1,254 @@
-# 🧠 NeuroAI – AI Medical Report Analyzer
+# 🧠 NeuroAI — AI-Powered Medical Report Analyzer
 
-NeuroAI is a full-stack AI-powered web application that helps users understand complex medical reports by generating patient-friendly summaries, identifying abnormal test values, and providing personalized health recommendations using Google's Gemini AI.
+NeuroAI is an AI-powered web application that analyzes medical reports and converts complex medical data into easy-to-understand insights.
 
-The application allows users to securely upload PDF medical reports, automatically extracts medical data, analyzes laboratory parameters, and presents the results in a clean and interactive dashboard.
-
----
+Users can upload medical reports in PDF format, extract important health parameters, identify abnormal values, generate patient-friendly summaries, and compare results from multiple reports to track health progress over time.
 
 ## 🚀 Live Demo
 
-🌐 Frontend: https://neuro-ai-flame.vercel.app/login
+**[Try NeuroAI Live](https://neuro-ai-snowy.vercel.app)**
 
-⚙️ Backend API: https://railway.com/project/8a3abae6-7992-47f0-abf2-ccc9a9dce28c?environmentId=f00e891d-856f-447f-b7b6-ae7af4d88495
-
----
-
-## 📸 Screenshots
-
-## 📸 Login Page
-
-![Login](assets/screenshots/login.png)
+> ⚠️ NeuroAI is an educational/project application and is not a substitute for professional medical advice.
 
 ---
 
-## 📸 Signup Page
+## ✨ Features
 
-![Signup](assets/screenshots/signup.png)
-
----
-
-## 📸 Dashboard
-
-![Dashboard](assets/screenshots/dashboard.png)
-
----
-
-
-### 📸 AI Analysis
-![Analysis](assets/screenshots/analysis.png)
-
----
-
-# ✨ Features
-
-- 🔐 Secure User Authentication (JWT)
-- 👤 User Signup & Login
-- 📄 Upload Medical Reports (PDF)
-- 🤖 AI-powered Medical Report Analysis
-- 🧠 Google Gemini AI Integration
-- 🩸 Automatic Extraction of Medical Parameters
-- 📊 Detects Abnormal Test Values
-- 📋 Patient-friendly Summary Generation
-- 💡 Personalized Health Recommendations
-- 📑 Interactive Test Results Table
-- 👨‍⚕️ Patient Information Extraction
-- ⚡ FastAPI Backend
-- ⚛️ React + Vite Frontend
-- 🗄️ MySQL Database
-- ☁️ Railway Backend Deployment
-- 🌐 Vercel Frontend Deployment
+* 📄 Upload medical reports in PDF format
+* 🔍 Extract text and medical test information
+* 🤖 AI-powered medical report analysis
+* 🧪 Identify abnormal test parameters
+* 📊 Display test values, units, reference ranges, and status
+* 📝 Generate easy-to-understand medical summaries
+* 💡 Generate general lifestyle recommendations
+* 👤 User registration and login
+* 🗂️ Store and view previous medical reports
+* 📈 Compare multiple medical reports
+* 📉 Visualize health parameter changes using progress charts
+* 📋 View before vs. latest test values
+* 🟢 Display latest parameter status
+* 📥 Downloadable report functionality
 
 ---
 
-# 🏗️ Tech Stack
+## 🛠️ Tech Stack
 
-## Frontend
+### Frontend
 
-- React.js
-- Vite
-- CSS3
-- Axios
-- React Icons
+* React
+* Vite
+* React Router
+* Axios
+* Recharts
+* jsPDF
+* React Icons
 
-## Backend
+### Backend
 
-- FastAPI
-- Python
-- SQLAlchemy
-- PyMySQL
-- JWT Authentication
-- Google Gemini AI
+* Python
+* FastAPI
+* Uvicorn
+* SQLAlchemy
+* PyMySQL
+* JWT Authentication
+* Pydantic
 
-## Database
+### AI & Document Processing
 
-- MySQL
+* Google Gemini API
+* PyMuPDF
+* OCR / document processing tools
 
-## Deployment
+### Database
 
-- Vercel
-- Railway
+* MySQL-compatible database
+* TiDB Cloud
+
+### Deployment
+
+* Vercel
 
 ---
 
-# 📂 Project Structure
+## 🏗️ Project Structure
 
-```
-NeuroAI
+```text
+NeuroAI/
 │
-├── backend
-│   ├── app
-│   │   ├── models
-│   │   ├── routers
-│   │   ├── services
-│   │   ├── schemas
-│   │   ├── utils
-│   │   ├── database.py
-│   │   ├── security.py
+├── backend/
+│   ├── app/
+│   │   ├── models/
+│   │   ├── routers/
+│   │   ├── schemas/
+│   │   ├── services/
+│   │   ├── utils/
 │   │   ├── config.py
-│   │   └── main.py
+│   │   ├── database.py
+│   │   ├── main.py
+│   │   └── security.py
 │   │
-│   └── requirements.txt
+│   ├── main.py
+│   ├── requirements.txt
+│   └── .env
 │
-├── frontend
-│   ├── src
-│   │   ├── components
-│   │   ├── pages
-│   │   ├── assets
-│   │   └── App.jsx
-│   │
-│   ├── package.json
-│   └── vite.config.js
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   └── ...
+│   └── package.json
 │
-└── README.md
+└── vercel.json
 ```
 
 ---
 
-# ⚙️ Installation
+## ⚙️ Local Setup
 
-## Clone Repository
+### 1. Clone the repository
 
 ```bash
-git clone https://github.com/Abhishek-22ds01/NeuroAI.git
-```
-
-```
+git clone https://github.com/Abhishek-22ds01/NeuroAi.git
 cd NeuroAI
 ```
 
----
+### 2. Backend Setup
 
-# Backend Setup
-
-```
+```bash
 cd backend
 ```
 
-Create Virtual Environment
+Create and activate a virtual environment:
 
-```
+```bash
 python -m venv venv
 ```
 
-Activate
+Windows:
 
-Windows
-
-```
+```bash
 venv\Scripts\activate
 ```
 
-Linux/Mac
+Install dependencies:
 
-```
-source venv/bin/activate
-```
-
-Install Dependencies
-
-```
+```bash
 pip install -r requirements.txt
 ```
 
-Create `.env`
+Create a `.env` file:
 
-```
-MYSQL_HOST=localhost
-MYSQL_PORT=3306
-MYSQL_USER=root
-MYSQL_PASSWORD=yourpassword
-MYSQL_DATABASE=neuroai_db
+```env
+GEMINI_API_KEY=your_gemini_api_key
+
+DATABASE_URL=your_database_url
 
 SECRET_KEY=your_secret_key
-ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=60
-
-GEMINI_API_KEY=your_gemini_api_key
 ```
 
-Run Backend
+Start the backend:
 
+```bash
+uvicorn main:app --reload
 ```
-uvicorn app.main:app --reload
+
+Backend will run locally at:
+
+```text
+http://127.0.0.1:8000
 ```
 
----
+### 3. Frontend Setup
 
-# Frontend Setup
+Open another terminal:
 
-```
+```bash
 cd frontend
 ```
 
-Install Packages
+Install dependencies:
 
-```
+```bash
 npm install
 ```
 
-Create `.env`
+Start the development server:
 
-```
-VITE_API_URL=http://127.0.0.1:8000
-```
-
-Run
-
-```
+```bash
 npm run dev
 ```
 
----
+The frontend will normally run at:
 
-# Production Deployment
-
-## Backend (Railway)
-
-Environment Variables
-
-```
-DATABASE_URL=Your Railway Database URL
-
-GEMINI_API_KEY=Your Gemini Key
-
-SECRET_KEY=Your Secret Key
-
-ALGORITHM=HS256
-
-ACCESS_TOKEN_EXPIRE_MINUTES=60
+```text
+http://localhost:5173
 ```
 
 ---
 
-## Frontend (Vercel)
+## 📊 Report Comparison
 
-Environment Variable
+NeuroAI allows users to select multiple previous reports and compare their test results.
 
-```
-VITE_API_URL=https://your-railway-url.up.railway.app
-```
+The comparison system provides:
 
----
+* Previous vs. latest values
+* Percentage change
+* Latest test status
+* Reference ranges
+* Interactive progress charts
+* Test-by-test comparison
 
-# Workflow
-
-```
-User
-   │
-   ▼
-React Frontend
-   │
-   ▼
-FastAPI Backend
-   │
-   ├── Authentication
-   ├── PDF Extraction
-   ├── Gemini AI Analysis
-   └── Database
-   │
-   ▼
-Response
-   │
-   ▼
-Dashboard
-```
+This helps users visualize changes across multiple medical reports.
 
 ---
 
-# Sample AI Response
+## 🔐 Security
 
-```json
-{
-  "patient_name": "Rahul Sharma",
-  "age": "29 Years",
-  "gender": "Male",
-  "report_type": "Complete Blood Count",
+API keys, database credentials, JWT secrets, and other sensitive information should be stored in environment variables.
 
-  "summary": "...",
-
-  "abnormal_parameters": [
-    {
-      "parameter": "Hemoglobin",
-      "value": "8.6 g/dL",
-      "normal_range": "13-17 g/dL",
-      "status": "Low"
-    }
-  ],
-
-  "recommendations": [
-    "Increase iron-rich foods.",
-    "Consult a physician.",
-    "Repeat CBC after treatment."
-  ]
-}
-```
+**Never commit `.env` files or API keys to GitHub.**
 
 ---
 
-# Future Improvements
+## 🚀 Deployment
 
-- 📈 Report History
-- 📥 Download AI Report as PDF
-- 📧 Email AI Summary
-- 💬 Chat with Medical Report
-- 🌙 Dark Mode
-- 📊 Medical Trends Dashboard
-- 📱 Mobile Responsive UI
-- 🌍 Multi-language Support
+The application is currently deployed using **Vercel**.
 
----
+### Live Application
 
-# Learning Outcomes
+**https://neuro-ai-snowy.vercel.app**
 
-This project demonstrates:
-
-- Full Stack Development
-- REST API Development
-- JWT Authentication
-- AI Integration
-- Prompt Engineering
-- PDF Processing
-- SQLAlchemy ORM
-- Database Design
-- Deployment using Railway
-- Deployment using Vercel
-- Environment Variable Management
-- Git & GitHub Workflow
+The project previously used Railway for deployment, but the current deployment has been migrated to Vercel.
 
 ---
 
-# Author
+## 🔮 Future Improvements
+
+Planned features include:
+
+* 💬 AI medical report chatbot
+* 👨‍⚕️ Doctor dashboard
+* 📊 More advanced health analytics
+* 📈 Improved health trend visualization
+* 📄 Enhanced PDF report generation
+* 🎨 Further UI/UX improvements
+* 🔔 Report notifications and reminders
+
+---
+
+## ⚠️ Disclaimer
+
+NeuroAI is developed as an educational and technical project.
+
+The information generated by the application should not be considered professional medical advice, diagnosis, or treatment. Users should consult a qualified healthcare professional for medical decisions.
+
+---
+
+## 👨‍💻 Author
 
 **Abhishek Kumar**
 
-LinkedIn:
-(Add Your LinkedIn)
+B.Tech — Computer Science & Engineering (Data Science)
 
-GitHub:
-https://github.com/Abhishek-22ds01
-
----
-
-⭐ If you found this project useful, consider giving it a star.
+GitHub: **[Abhishek-22ds01](https://github.com/Abhishek-22ds01)**
